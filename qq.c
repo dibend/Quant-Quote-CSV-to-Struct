@@ -13,6 +13,7 @@ struct Quote_List qq_file_to_Quote_List(char *filename)
     size = s.st_size;
 
     f = (char *) mmap (0, size, PROT_READ, MAP_PRIVATE, fd, 0);
+    close(fd);
     
     num_quotes = 0;
     for(int i = 0; i < size; i++) {
