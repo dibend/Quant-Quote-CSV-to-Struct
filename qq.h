@@ -18,7 +18,7 @@
 
 struct Quote {
     uint32_t time;
-    uint32_t price;
+    double price;
 };
 
 struct Quote_List {

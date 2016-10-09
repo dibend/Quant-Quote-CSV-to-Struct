@@ -3,9 +3,10 @@
 struct Quote_List qq_file_to_Quote_List(char *filename)
 {
     char *f, *element;
-    int size, num_quotes, q_index, pos, column, row, val, mkt_open;
+    int num_quotes, q_index, pos, column, row, timestamp, mkt_open;
     struct Quote_List My_Quote_List;    
     struct stat s;
+    size_t size;
     int fd = open (filename, O_RDONLY);
 
     /* Get the size of the file. */
@@ -35,23 +36,22 @@ struct Quote_List qq_file_to_Quote_List(char *filename)
                 element = (char *) malloc(el_size);
                 memcpy(element, &f[pos], el_size);
                 element[el_size] = 0; //null terminate
-                val = atoi(element);
+                timestamp = atoi(element);
                 free(element);
                 //if regular market hours
-                if(val > 34200000 && val < 57600000) {
+                if(timestamp > 34200000 && timestamp < 57600000) {
                     mkt_open = 1;
-                    My_Quote_List.Quotes[q_index].time = val;
+                    My_Quote_List.Quotes[q_index].time = timestamp;
                 } else {
                     mkt_open = 0;
                 }
             } else if(column == 1 && mkt_open) {
                 int el_size = ((i-pos) * sizeof(char)) + 1;
-		element = (char *) malloc(el_size);
+                element = (char *) malloc(el_size);
                 memcpy(element, &f[pos], el_size);
                 element[el_size] = 0; //null terminate
-                val = atoi(element);
+                My_Quote_List.Quotes[q_index].price = atof(element);
                 free(element);
-                My_Quote_List.Quotes[q_index].price = val;
                 q_index ++;
             }
             pos = i+1;
